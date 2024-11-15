@@ -1,9 +1,12 @@
+import Typography from "@mui/material/Typography";
 import ProductList from "./ProductList";
 
 const Homepage = () => {
   return (
     <>
-      <h2 style={{ textAlign: "center" }}>Welcome to our humble shop.</h2>
+      <Typography style={{ textAlign: "center" }} variant="h3">
+        Welcome to our humble shop
+      </Typography>
       <ProductList />
     </>
   );

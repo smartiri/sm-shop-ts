@@ -1,4 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useCart } from "../context/CartContext";
 import useApi from "../hooks/useApi";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -6,8 +8,6 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { useEffect } from "react";
-import { useCart } from "../context/CartContext";
 
 const ProductList = () => {
   const { products, fetchProducts, deleteProduct } = useApi();
@@ -15,7 +15,7 @@ const ProductList = () => {
   const location = useLocation();
   const { addToCart } = useCart();
   const handleClick = () => {
-    navigate("/products");
+    navigate("/products", { state: { product_id: 0 } });
   };
 
   useEffect(() => {
@@ -37,14 +37,16 @@ const ProductList = () => {
   };
   return (
     <div>
-      <Button
-        variant="outlined"
-        sx={{ border: "1px solid green", color: "green", float: "right" }}
-        onClick={handleClick}
-      >
-        Create Product
-      </Button>
-      <br />
+      <div style={{ padding: "2%" }}>
+        <Button
+          variant="outlined"
+          sx={{ border: "1px solid green", color: "green" }}
+          onClick={handleClick}
+        >
+          Create Product
+        </Button>
+        <br />
+      </div>
       <div
         style={{
           display: "grid",
@@ -54,7 +56,15 @@ const ProductList = () => {
       >
         {products.length > 0 ? (
           products.map((product) => (
-            <Card sx={{ maxWidth: 345 }} key={product.id}>
+            <Card
+              key={product.id}
+              sx={{
+                maxWidth: 345,
+                display: "flex",
+                justifyContent: "space-between",
+                flexDirection: "column",
+              }}
+            >
               <CardMedia
                 component="img"
                 alt={product.title}

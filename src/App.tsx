@@ -5,6 +5,7 @@ import Homepage from "./containers/Homepage";
 import CreateEditProduct from "./containers/CreateEditProduct";
 import { CartProvider } from "./context/CartContext";
 import CartDetails from "./containers/CartDetails";
+import Invoice from "./containers/Invoice";
 function App() {
   return (
     <BrowserRouter>
@@ -14,13 +15,14 @@ function App() {
             <Route path="/" element={<Homepage />} />
             <Route path="/products" element={<CreateEditProduct />} />
             <Route path="/products/:id" element={<CreateEditProduct />} />
+            <Route path="/checkout" element={<CartDetails />} />
+            <Route path="/invoice" element={<Invoice />} />
             <Route
               path="*"
               element={
                 <div style={{ textAlign: "center" }}>Not found! Try again!</div>
               }
             />
-            <Route path="/checkout" element={<CartDetails />} />
           </Route>
         </Routes>
       </CartProvider>

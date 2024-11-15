@@ -10,15 +10,20 @@ interface CartItem {
   id: number;
   title: string;
   price: number;
+  description: string;
+  images: any;
   quantity: number;
 }
 
 interface CartContextProps {
   cart: CartItem[];
+  invoice: CartItem[][];
   addToCart: (item: CartItem) => void;
   removeFromCart: (id: number) => void;
   updateQuantity: (id: number, quantity: number) => void;
   clearCart: () => void;
+  addInvoice: () => void;
+  clearInvoice: () => void;
 }
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
@@ -30,10 +35,18 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     const savedCart = localStorage.getItem("cartItems");
     return savedCart ? JSON.parse(savedCart) : [];
   });
+  const [invoice, setInvoice] = useState<CartItem[][]>(() => {
+    const savedInvoice = localStorage.getItem("invoiceItems");
+    return savedInvoice ? JSON.parse(savedInvoice) : [];
+  });
 
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cart));
   }, [cart]);
+
+  useEffect(() => {
+    localStorage.setItem("invoiceItems", JSON.stringify(invoice));
+  }, [invoice]);
 
   const addToCart = (item: CartItem) => {
     const existingItem = cart.find((cartItem) => cartItem.id === item.id);
@@ -43,29 +56,34 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
           cartItem.id === item.id
             ? {
                 ...cartItem,
-                quantity: cartItem.quantity
-                  ? cartItem.quantity + item.quantity
-                  : 1,
+                quantity: cartItem.quantity + 1,
               }
             : cartItem
         )
       );
     } else {
-      setCart((prevCart) => [
-        ...prevCart,
-        { ...item, quantity: item.quantity || 1 },
-      ]);
+      setCart((prevCart) => [...prevCart, { ...item, quantity: 1 }]);
     }
   };
 
   const updateQuantity = (id: number, quantity: number) => {
-    setCart((prevItems) =>
-      prevItems.map((item) => (item.id === id ? { ...item, quantity } : item))
-    );
+    if (quantity > 0) {
+      setCart((prevItems) =>
+        prevItems.map((item) => (item.id === id ? { ...item, quantity } : item))
+      );
+    }
   };
 
   const removeFromCart = (id: number) => {
     setCart((prevCart) => prevCart.filter((cartItem) => cartItem.id !== id));
+  };
+
+  const addInvoice = () => {
+    setInvoice((prevInvoices) => [...prevInvoices, cart]);
+  };
+
+  const clearInvoice = () => {
+    setInvoice([]);
   };
 
   const clearCart = () => {
@@ -74,7 +92,16 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
 
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, clearCart, updateQuantity }}
+      value={{
+        cart,
+        invoice,
+        addToCart,
+        removeFromCart,
+        clearCart,
+        updateQuantity,
+        addInvoice,
+        clearInvoice,
+      }}
     >
       {children}
     </CartContext.Provider>

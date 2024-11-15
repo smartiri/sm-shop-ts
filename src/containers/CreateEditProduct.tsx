@@ -1,9 +1,16 @@
-import { Button, FormHelperText, TextField } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import useApi from "../hooks/useApi";
-import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import useApi from "../hooks/useApi";
+
+import Typography from "@mui/material/Typography";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Button from "@mui/material/Button";
+import FormHelperText from "@mui/material/FormHelperText";
+import TextField from "@mui/material/TextField";
 
 interface ProductFormData {
   title: string;
@@ -27,7 +34,7 @@ const CreateEditProduct = () => {
     useApi();
 
   useEffect(() => {
-    if (location.state) {
+    if (location.state !== 0) {
       fetchProduct(location.state.product_id);
     }
   }, [location.state.product_id]);
@@ -50,7 +57,7 @@ const CreateEditProduct = () => {
       category: selectedCategory[0],
       images: selectedCategory ? [selectedCategory[0].image] : "",
     };
-    if (location.state) {
+    if (location.state.product_id > 0) {
       updateProduct(location.state.product_id, newProduct);
     } else {
       createProduct(newProduct);
@@ -68,7 +75,9 @@ const CreateEditProduct = () => {
         textAlign: "center",
       }}
     >
-      <h2>Create/Update Product</h2>
+      <Typography variant="h3">
+        {location.state.product_id > 0 ? "Update Product" : "Create Product"}
+      </Typography>
       <div>
         <form
           style={{
@@ -81,16 +90,17 @@ const CreateEditProduct = () => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <TextField
-            variant="outlined"
+            variant="filled"
             required
             id="standard-required"
+            defaultValue={""}
             label="Name"
             {...register("title", { required: "Title is required" })}
             error={!!errors.title}
             helperText={errors.title?.message}
           ></TextField>
           <TextField
-            variant="outlined"
+            variant="filled"
             required
             id="standard-required"
             label="Description"
@@ -102,7 +112,7 @@ const CreateEditProduct = () => {
           ></TextField>
           <TextField
             type="number"
-            variant="outlined"
+            variant="filled"
             required
             id="standard-required"
             label="Price"

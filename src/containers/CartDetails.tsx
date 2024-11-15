@@ -1,10 +1,12 @@
-import { Button, Typography } from "@mui/material";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useCart } from "../context/CartContext";
-import "../App.css";
 import { useState, useEffect } from "react";
 
 const CartDetails = () => {
-  const { cart, updateQuantity, removeFromCart, clearCart } = useCart();
+  const { cart, updateQuantity, removeFromCart, clearCart, addInvoice } =
+    useCart();
   const [completeCheckout, setCompleteCheckout] = useState(false);
   const totalPrice = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -12,6 +14,7 @@ const CartDetails = () => {
   );
 
   const handleCheckout = () => {
+    addInvoice();
     clearCart();
     setCompleteCheckout(true);
   };
@@ -24,7 +27,12 @@ const CartDetails = () => {
 
   return (
     <div>
-      <div style={{ fontSize: "20px" }}>
+      <div
+        style={{
+          display: "grid",
+          gap: "20px",
+        }}
+      >
         <Typography variant="h3" sx={{ textAlign: "center" }}>
           Checkout
         </Typography>
@@ -35,59 +43,68 @@ const CartDetails = () => {
               style={{
                 display: "flex",
                 justifyContent: "center",
-                gap: "5%",
+                gap: "30px",
                 padding: "2%",
+                border: "1px solid black",
+                borderRadius: "7px",
+                boxShadow: "5px 10px rgb(65, 41, 90)",
               }}
             >
-              <img src={item.images[0]} alt={item.title} width="100" />
-              <p>{item.title}</p>
-              <p>Price: ${item.price}</p>
-              <p>
-                Quantity:
-                <input
+              <img src={item.images[0]} alt={item.title} width="300" />
+              <div style={{ display: "grid" }}>
+                <Typography variant="h5">{item.title}</Typography>
+                <Typography variant="h6">{item.description}$</Typography>
+                <Typography variant="h4" sx={{ color: "rgb(65, 41, 90)" }}>
+                  Price:{item.price}$
+                </Typography>
+
+                <Typography variant="h6">Quantity:</Typography>
+                <TextField
                   type="number"
                   style={{ backgroundColor: "white", color: "black" }}
                   value={item.quantity}
                   onChange={(e) =>
                     updateQuantity(item.id, Number(e.target.value))
                   }
-                  min="1"
-                />
-              </p>
-              <Button
-                size="small"
-                style={{ backgroundColor: "#3f4c6b" }}
-                variant="contained"
-                onClick={() => removeFromCart(item.id)}
-              >
-                Remove
-              </Button>
+                ></TextField>
+                <Button
+                  size="small"
+                  sx={{
+                    backgroundColor: "#3f4c6b",
+                    boxShadow: "5px 10px",
+                    transition: "all 0.5 ",
+                  }}
+                  variant="contained"
+                  onClick={() => removeFromCart(item.id)}
+                >
+                  Remove
+                </Button>
+              </div>
             </div>
           ))}
         <br />
         <br />
         <div style={{ textAlign: "center" }}>
-          <h2>
-            Total Price: {totalPrice.toFixed(2) ? totalPrice.toFixed(2) : 0}
-          </h2>
           {cart.length !== 0 && (
-            <Button
-              size="small"
-              style={{ backgroundColor: "#3f4c6b" }}
-              variant="contained"
-              onClick={handleCheckout}
-            >
-              Checkout
-            </Button>
+            <div>
+              <Typography style={{ textAlign: "center" }} variant="h3">
+                Total Price: {totalPrice ? totalPrice.toFixed(2) : "0.00"}$
+              </Typography>
+              <Button
+                size="small"
+                style={{ backgroundColor: "#3f4c6b" }}
+                variant="contained"
+                onClick={handleCheckout}
+              >
+                Checkout
+              </Button>
+            </div>
           )}
           {completeCheckout && (
-            <h2 style={{ textAlign: "center" }}>
+            <Typography style={{ textAlign: "center" }} variant="h3">
               THANK YOU FOR PURCHASING ON OUR HUMBLE STORE
               <br />
-              <span>AND THANK YOU FOR SUPPORTING OUR SMALL BUSINESS</span>
-              <br />
-              <span>That's all folks.....</span>
-            </h2>
+            </Typography>
           )}
         </div>
       </div>

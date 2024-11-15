@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
@@ -9,12 +10,10 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-
 import MenuIcon from "@mui/icons-material/Menu";
 import HomeIcon from "@mui/icons-material/Home";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { useCart } from "../context/CartContext";
 
 const Layout = () => {
   const { cart } = useCart();
@@ -26,6 +25,7 @@ const Layout = () => {
   const items = [
     { text: "Home", icon: <HomeIcon />, path: "/" },
     { text: "Shopping Cart", icon: <ShoppingCartIcon />, path: "/checkout" },
+    { text: "Invoices", icon: <ReceiptIcon />, path: "/invoice" },
   ];
   const DrawerList = (
     <Box
@@ -68,7 +68,7 @@ const Layout = () => {
           }}
         >
           <a
-            href="#"
+            href="/checkout"
             style={{
               display: "flex",
               marginTop: "-8.5%",
@@ -76,9 +76,8 @@ const Layout = () => {
             }}
           >
             <ShoppingCartIcon />
-            <a href="/checkout">
-              <p>Cart Items: {cart.length}</p>
-            </a>
+
+            <p>Cart Items: {cart.length}</p>
           </a>
         </div>
       </div>

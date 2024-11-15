@@ -113,7 +113,6 @@ const useApi = () => {
   useEffect(() => {
     fetchCategories();
     fetchProducts();
-    console.log("rendered");
   }, []);
 
   return {
